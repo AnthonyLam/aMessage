@@ -22,7 +22,7 @@ func main() {
 
     // Configure the server
     server := &http.Server{
-        Addr: ":"+port,
+        Addr: ":"+*port,
         Handler: mymux,
     }
     log.Fatal(server.ListenAndServe())
