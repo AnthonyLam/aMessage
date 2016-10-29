@@ -4,9 +4,11 @@ import (
     "log"
     "net/http"
     "fmt"
+    "flag"
 )
 
 func main() {
+    port := flag.String("port","8080","Set the port here")
 
     mymux := http.NewServeMux()
     mymux.HandleFunc("/sms/new",pduToString)
@@ -20,7 +22,7 @@ func main() {
 
     // Configure the server
     server := &http.Server{
-        Addr: ":5000",
+        Addr: ":"+port,
         Handler: mymux,
     }
     log.Fatal(server.ListenAndServe())

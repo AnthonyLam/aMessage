@@ -1,1 +1,1 @@
-web: aMessage
+web: aMessage -port $PORT
