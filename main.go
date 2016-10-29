@@ -20,7 +20,7 @@ func main() {
 
     // Configure the server
     server := &http.Server{
-        Addr: ":8080",
+        Addr: ":5000",
         Handler: mymux,
     }
     log.Fatal(server.ListenAndServe())
