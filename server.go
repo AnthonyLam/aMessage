@@ -1,4 +1,4 @@
-package aMessage
+package main
 
 import (
 	"flag"
@@ -14,9 +14,9 @@ func main() {
 
 	mymux := http.NewServeMux()
 	mymux.HandleFunc("/sms/new", SmsToObjAndBack)
-	mymux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Println("Root dir")
-	})
+	//mymux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+	//	fmt.Println("Root dir")
+	//})
 
 	// Configure the server
 	server := &http.Server{
@@ -29,23 +29,26 @@ func main() {
 
 func SmsToObjAndBack(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" {
+		fmt.Println("Got a POST")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 
 		// Read bytes
-		dat, status := ioutil.readAll(req.Body.Reader, 5000000)
-		if status != nil {
+		dat, err1 := ioutil.ReadAll(req.Body)
+		if err1 != nil {
 			fmt.Println("Too many bytes!!! AAHHH Vampires!")
 			return
 		}
 
 		message := NewSms(dat)
 		fmt.Println(message.String())
-		status, err := w.Write(message.Bytes())
+		_, err := w.Write(message.Bytes())
 		if err != nil {
 			fmt.Println("Couldn't marshal bytes")
 		}
 	} else {
+		fmt.Println("Got other method")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+	fmt.Fprintf(w, "Response")
 }

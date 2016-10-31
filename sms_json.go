@@ -1,7 +1,8 @@
 package main
 
 import (
-	"json"
+	"encoding/json"
+	"fmt"
 )
 
 type MessageType int32
@@ -29,10 +30,12 @@ func (m *Sms) String() string {
 	return fmt.Sprintf("Address: %s\nBody: %s\n", m.Address, m.Body)
 }
 
-func (m *Sms) Bytes() byte {
+func (m *Sms) Bytes() []byte {
 	res, _ := json.Marshal(*m)
+	return res
 }
 
 func NewSms(response []byte) (sms Sms) {
-	err := json.Unmarshal(response, &sms)
+	json.Unmarshal(response, &sms)
+	return
 }
