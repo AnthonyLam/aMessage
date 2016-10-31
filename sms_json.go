@@ -28,3 +28,11 @@ type Sms struct {
 func (m *Sms) String() string {
 	return fmt.Sprintf("Address: %s\nBody: %s\n", m.Address, m.Body)
 }
+
+func (m *Sms) Bytes() byte {
+	res, _ := json.Marshal(*m)
+}
+
+func NewSms(response []byte) (sms Sms) {
+	err := json.Unmarshal(response, &sms)
+}
