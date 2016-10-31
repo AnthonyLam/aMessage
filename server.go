@@ -3,6 +3,7 @@ package aMessage
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -12,7 +13,7 @@ func main() {
 	flag.Parse()
 
 	mymux := http.NewServeMux()
-	mymux.HandleFunc("/sms/new", pduToString)
+	mymux.HandleFunc("/sms/new", SmsToObjAndBack)
 	mymux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("Root dir")
 	})
@@ -26,6 +27,25 @@ func main() {
 	log.Fatal(server.ListenAndServe())
 }
 
-func pduToString(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("You got a new message, but fuck you")
+func SmsToObjAndBack(w http.ResponseWriter, req *http.Request) {
+	if req.Method == "POST" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		// Read bytes
+		dat, status := ioutil.readAll(req.Body.Reader, 5000000)
+		if status != nil {
+			fmt.Println("Too many bytes!!! AAHHH Vampires!")
+			return
+		}
+
+		message := NewSms(dat)
+		fmt.Println(message.String())
+		status, err := w.Write(message.Bytes())
+		if err != nil {
+			fmt.Println("Couldn't marshal bytes")
+		}
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
