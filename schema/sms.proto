@@ -1,0 +1,24 @@
+syntax = "proto3";
+package sms;
+
+message Sms {
+    string address =1;
+    string body = 2;
+    uint64 date_received = 3;
+    uint64 date_sent = 4;
+    uint32 person = 5;
+
+    enum MessageType {
+        MESSAGE_TYPE_ALL = 0;
+        MESSAGE_TYPE_INBOX = 1;
+        MESSAGE_TYPE_SENT = 2;
+        MESSAGE_TYPE_DRAFT = 3;
+        MESSAGE_TYPE_OUTBOX = 4;
+        MESSAGE_TYPE_FAILED = 5;
+        MESSAGE_TYPE_QUEUED = 6;
+    }
+
+    uint32 type = 6;
+
+    uint32 protocol = 7;
+    }
